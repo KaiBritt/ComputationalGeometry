@@ -4,6 +4,7 @@
 
 #include "ConvexHull.h"
 
+#include <algorithm>
 #include <iostream>
 #include <ostream>
 #include <ranges>
@@ -65,6 +66,35 @@ bool Utils::leftOf(point A, point B, point C) {
     // double cross = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
     // return cross > 0;  // Positive means C is to the left of AB
 }
+
+
+bool compareByX(const point& a, const point& b) {
+    return a.x < b.x;
+}
+
+point * Utils::constructPolygon(std::vector<point>& points) {
+    point * polygon = new point[points.size()];
+
+    std::sort(points.begin(), points.end(), compareByX);
+    const point left_point = points[0];
+    const point right_point = points[points.size()-1];
+    int l = 1;
+    int r =  points.size() - 1;
+    polygon[0]=left_point;
+    for (int i  = 1; i < points.size(); i++) {
+        if (Utils::leftOf(left_point, right_point, points[i])) {
+            polygon[r] = points[i];
+            r -= 1;
+        }
+        else {
+            polygon[l]= points[i];
+            l += 1;
+        }
+    }
+
+    return polygon;
+}
+
 
 /**
  *

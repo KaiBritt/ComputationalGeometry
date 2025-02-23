@@ -54,7 +54,8 @@ std::string pointToDesmos(std::vector<point> points);
 namespace Utils {
     bool leftOf(point A, point B, point C);
     static double slope(point A,point B);
+    point * constructPolygon(std::vector<point> &points);
 }
 
-#endif //CONVEXHULL_H
+    #endif //CONVEXHULL_H
     
