@@ -8,6 +8,7 @@
     #include <cmath>
     #include <limits>
     #include <string>
+    #include <matplot/matplot.h>
 
 enum class Method {
         NAIVE,
@@ -25,10 +26,10 @@ enum class Method {
 
     };
 
-    struct segment {
-        segment(const point _a, const point _b) : a(_a), b(_b) {};
-        point a,b;
-    };
+    // struct segment {
+    //     segment(const point _a, const point _b) : a(_a), b(_b) {};
+    //     point a,b;
+    // };
 
     struct PointHash {
         std::size_t operator()(const point& p) const {
@@ -39,12 +40,11 @@ enum class Method {
         public:
             ConvexHull(std::vector<point> points);
             void findHull(Method function);
-            void displayHull(std::string outPath);
+            void displayHull(const std::string &outPath, double xmin=0, double xmax=100, double ymin=0, double ymax=100);
             std::vector<point> points;
             std::vector<point> hullPoints;
-            std::vector<segment> hullSegments;
         private:
-            void remove_hullPoint_duplicates();
+            void remove_duplicates(std::vector<point>& points);
             void naive_hull();
             void graham_scan();
     };
@@ -54,6 +54,9 @@ std::string pointToDesmos(std::vector<point> points);
 namespace Utils {
     bool leftOf(point A, point B, point C);
     static double slope(point A,point B);
+    bool angularCompare(const point& a, const point& b, const point& c);
+    std::pair<double,double> computeAngle(const point& a, const point& b, const point& c);
+    std::vector<point> generatePointSet(int size, int xMin=0, int xMax=1);
     point * constructPolygon(std::vector<point> &points);
 }
 
