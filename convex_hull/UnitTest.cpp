@@ -36,23 +36,24 @@ TEST(GrahamScan, colinearInnerVertex) {
     std::vector<point> points =  {{4,4},{4,0},{0,0},{2,2},{0,4}};
     ConvexHull simple = ConvexHull(points);
     simple.findHull(Method::GRAHAM);
+    std::cout << "Hull Points: " << std::endl;
     for (const auto & p:simple.hullPoints) {
         std::cout << p.x << ", " << p.y << std::endl;
     }
-    // simple.displayHull("figures/ColinearInnerVertex.png",-1, 5, -1,5);
+    // simple.displayHull("figures/GrahamColinearInnerVertex.png",-1, 5, -1,5);
 }
 
 TEST(GrahamScan, colinearOnHull) {
-    std::vector<point> points =  {{4,0},{0,0},{2,2},{0.6,3.4},{3.1,0.9},{0,4},{2,1},{1.5,2.5},{1.4,2.5}};
+    std::vector<point> points =  {{4,0},{0,0},{2,2},{0.6,3.4},{0,2},{2,0},{3.1,0.9},{0,4},{2,1},{1.5,2.5},{1.4,2.5}};
     auto rng = std::default_random_engine {};
     std::shuffle(std::begin(points), std::end(points), rng);
     ConvexHull simple = ConvexHull(points);
-
+    std::cout << "Hull Points: " << std::endl;
     simple.findHull(Method::GRAHAM);
     for (const auto & p:simple.hullPoints) {
         std::cout << "(" <<  p.x << ", " << p.y <<  ")" << std::endl;
     }
-    // simple.displayHull("figures/colinearOnHull.png",-1, 5, -1,5);
+    // simple.displayHull("figures/GrahamColinearOnHull.png",-1, 5, -1,5);
 
 }
 
@@ -61,13 +62,51 @@ TEST(GrahamScan, degenerate) {
     auto rng = std::default_random_engine {};
     std::shuffle(std::begin(points), std::end(points), rng);
     ConvexHull simple = ConvexHull(points);
-
+    std::cout << "Hull Points: " << std::endl;
     simple.findHull(Method::GRAHAM);
     for (const auto & p:simple.hullPoints) {
         std::cout << "(" <<  p.x << ", " << p.y <<  ")" << std::endl;
     }
-    // simple.displayHull("figures/degenerate.png",-1, 5, -1,5);
+    // simple.displayHull("figures/GrahamDegenerate.png",-1, 5, -1,5);
 
+}
+
+TEST(Naive, colinearInnerVertex) {
+    std::vector<point> points =  {{4,4},{4,0},{0,0},{2,2},{0,4}};
+    ConvexHull simple = ConvexHull(points);
+    simple.findHull(Method::NAIVE);
+    std::cout << "Hull Points: " << std::endl;
+    for (const auto & p:simple.hullPoints) {
+        std::cout << p.x << ", " << p.y << std::endl;
+    }
+    // simple.displayHull("figures/NaiveColinearInnerVertex.png",-1, 5, -1,5);
+}
+
+TEST(Naive, colinearOnHull) {
+    std::vector<point> points =  {{4,0},{0,0},{2,2},{0.6,3.4},{0,2},{2,0},{3.1,0.9},{0,4},{2,1},{1.5,2.5},{1.4,2.5}};
+    auto rng = std::default_random_engine {};
+    std::shuffle(std::begin(points), std::end(points), rng);
+    ConvexHull simple = ConvexHull(points);
+    std::cout << "Hull Points: " << std::endl;
+    simple.findHull(Method::NAIVE);
+    for (const auto & p:simple.hullPoints) {
+        std::cout << "(" <<  p.x << ", " << p.y <<  ")" << std::endl;
+    }
+    // simple.displayHull("figures/NaiveColinearOnHull.png",-1, 5, -1,5);
+
+}
+
+TEST(Naive, degenerate) {
+    std::vector<point> points =  {{4,0},{0,0}};
+    auto rng = std::default_random_engine {};
+    std::shuffle(std::begin(points), std::end(points), rng);
+    ConvexHull simple = ConvexHull(points);
+    std::cout << "Hull Points: " << std::endl;
+    simple.findHull(Method::NAIVE);
+    for (const auto & p:simple.hullPoints) {
+        std::cout << "(" <<  p.x << ", " << p.y <<  ")" << std::endl;
+    }
+    // simple.displayHull("figures/NaiveDegenerate.png",-1, 5, -1,5);
 }
 
 
@@ -116,7 +155,7 @@ TEST(Timing,tenThousand) {
 }
 
 TEST(Timing,hundredThousand) {
-    std::vector<point>  points = Utils::generatePointSet(10000, 0,1000);
+    std::vector<point>  points = Utils::generatePointSet(100000, 0,1000);
     ConvexHull hull = ConvexHull(points);
     std::time_t start = std::time(nullptr);
     hull.findHull(Method::GRAHAM);

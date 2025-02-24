@@ -15,17 +15,26 @@
 
 
 
-std::vector<point> Utils::generatePointSet(int size, int xMin, int xMax) {
+std::vector<point> Utils::generatePointSet(int size, int xMin, int xMax, bool circular) {
     std::vector<point> points;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<double> dist(xMin, xMax);
 
     for (int i = 0; i < size; i++) {
-        points.emplace_back(dist(gen),dist(gen));
-
+        if (circular) {
+            double t = dist(gen);
+            points.emplace_back(double(xMax) * cos(t),double(xMax) * sin(t));
+        }
+        else {
+            points.emplace_back(dist(gen),dist(gen));
+        }
     }
     return points;
+}
+
+double crossProduct(const point& a, const point& b, const point& c) {
+    return (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
 }
 
 /**
@@ -56,7 +65,7 @@ bool Utils::leftOf(point A, point B, point C) {
     // Calculate the line function given AB
     double m = slope(A,B);
     double pointOnLine = m * (C.x - A.x) + A.y;
-    
+
 
     //vertical line
     if  (std::isinf(m)) {
@@ -76,12 +85,14 @@ bool Utils::leftOf(point A, point B, point C) {
         return true;
 
     return false;
-    // double cross = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
-    // return cross > 0;  // Positive means C is to the left of AB
+
 }
 
 
 bool compareByX(const point& a, const point& b) {
+    if (a.x == b.x){
+        return a.y < b.y;
+    }
     return a.x < b.x;
 }
 
@@ -116,6 +127,7 @@ bool Utils::angularCompare(const point& a, const point&b, const point&c) {
     return angleB.first < angleC.first;
 }
 
+
 point * Utils::constructPolygon(std::vector<point>& points) {
     point * polygon = new point[points.size()];
 
@@ -126,7 +138,7 @@ point * Utils::constructPolygon(std::vector<point>& points) {
     int r =  points.size() - 1;
     polygon[0]=left_point;
     for (int i  = 1; i < points.size(); i++) {
-        if (Utils::leftOf(left_point, right_point, points[i])) {
+        if (crossProduct(left_point, right_point, points[i])>= 0) {
             polygon[r] = points[i];
             r -= 1;
         }
@@ -138,6 +150,27 @@ point * Utils::constructPolygon(std::vector<point>& points) {
 
     return polygon;
 }
+
+std::vector<point> removeColinearFromPolygon(std::vector<point>& polygon) {
+    if (polygon.size() < 3) return polygon;
+
+    std::vector<point> newPolygon;
+    newPolygon.push_back(polygon[0]);
+
+    for (int i = 1; i < polygon.size() - 1; i++) {
+        while (i < polygon.size() - 1 && fabs(crossProduct(newPolygon.back(), polygon[i], polygon[i + 1])) <= 1e-9) {
+            i++;
+        }
+        newPolygon.push_back(polygon[i]);
+    }
+    // chck if last point is colinear
+    if (fabs(crossProduct(newPolygon.back(), polygon.back(),polygon[0])) > 1e-9) {
+        newPolygon.push_back(polygon.back());
+    }
+    return newPolygon;
+}
+
+
 
 
 
@@ -158,8 +191,10 @@ void ConvexHull::naive_hull() {
             bool allLeftOf = true;
             if (A == B) continue;
             for (int C = 0; C < points.size(); C++) {
-                bool isLeftOf = Utils::leftOf(points[A],points[B],points[C]);
-                if (B!=C && C!=A && !isLeftOf) {
+                double cp = crossProduct(points[A],points[B],points[C]);
+                bool isLeftOf =  Utils::leftOf(points[A],points[B],points[C]);
+
+                if (cp != 0 && B!=C && C!=A && !isLeftOf) {
                     allLeftOf = false;
                     break;
                 }
@@ -170,13 +205,13 @@ void ConvexHull::naive_hull() {
             }
         }
     }
-   remove_duplicates(this->hullPoints);
+    remove_duplicates(this->hullPoints);
+    point * polygon = Utils::constructPolygon(this->hullPoints);
+    std::vector<point> vPgon(polygon, polygon + this->hullPoints.size());
+    this->hullPoints = removeColinearFromPolygon(vPgon);
+;
 }
-double crossProduct(const point& a, const point& b, const point& c) {
-    double crossProduct = (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x);
 
-    return crossProduct;
-}
 
 void ConvexHull::graham_scan() {
     //process points
@@ -259,6 +294,7 @@ void ConvexHull::displayHull(const std::string &outPath,double xmin,double xmax,
     for (size_t i = 0; i < hull_size;i++) {
         matplot::plot({polygon[i].x, polygon[(i+1)%hull_size].x}, {polygon[i].y, polygon[(i+1)%hull_size].y}, "r-")->line_width(1);
     }
+    title(outPath);
     axis( {xmin, xmax, ymin, ymax});
     save(outPath);
     cla();

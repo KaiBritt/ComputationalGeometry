@@ -56,7 +56,7 @@ namespace Utils {
     static double slope(point A,point B);
     bool angularCompare(const point& a, const point& b, const point& c);
     std::pair<double,double> computeAngle(const point& a, const point& b, const point& c);
-    std::vector<point> generatePointSet(int size, int xMin=0, int xMax=1);
+    std::vector<point> generatePointSet(int size, int xMin=0, int xMax=1, bool circular = false);
     point * constructPolygon(std::vector<point> &points);
 }
 
