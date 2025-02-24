@@ -28,7 +28,7 @@ TEST(AngluarSorting, points) {
     ConvexHull simple = ConvexHull(points);
     simple.findHull(Method::GRAHAM);
     for (const auto & p:simple.hullPoints) {
-        std::cout << p.x << ", " << p.y << std::endl;
+        std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
     }
 }
 
@@ -38,7 +38,7 @@ TEST(GrahamScan, colinearInnerVertex) {
     simple.findHull(Method::GRAHAM);
     std::cout << "Hull Points: " << std::endl;
     for (const auto & p:simple.hullPoints) {
-        std::cout << p.x << ", " << p.y << std::endl;
+        std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
     }
     // simple.displayHull("figures/GrahamColinearInnerVertex.png",-1, 5, -1,5);
 }
@@ -51,7 +51,7 @@ TEST(GrahamScan, colinearOnHull) {
     std::cout << "Hull Points: " << std::endl;
     simple.findHull(Method::GRAHAM);
     for (const auto & p:simple.hullPoints) {
-        std::cout << "(" <<  p.x << ", " << p.y <<  ")" << std::endl;
+        std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
     }
     // simple.displayHull("figures/GrahamColinearOnHull.png",-1, 5, -1,5);
 
@@ -65,7 +65,7 @@ TEST(GrahamScan, degenerate) {
     std::cout << "Hull Points: " << std::endl;
     simple.findHull(Method::GRAHAM);
     for (const auto & p:simple.hullPoints) {
-        std::cout << "(" <<  p.x << ", " << p.y <<  ")" << std::endl;
+        std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
     }
     // simple.displayHull("figures/GrahamDegenerate.png",-1, 5, -1,5);
 
@@ -77,7 +77,7 @@ TEST(Naive, colinearInnerVertex) {
     simple.findHull(Method::NAIVE);
     std::cout << "Hull Points: " << std::endl;
     for (const auto & p:simple.hullPoints) {
-        std::cout << p.x << ", " << p.y << std::endl;
+        std::cout << "(" << p.x << ", " << p.y << ")" << std::endl;
     }
     // simple.displayHull("figures/NaiveColinearInnerVertex.png",-1, 5, -1,5);
 }
