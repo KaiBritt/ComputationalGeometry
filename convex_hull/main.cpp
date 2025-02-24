@@ -3,23 +3,6 @@
 #include <random>
 // #include <>
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-
-
-// std::vector<point> generatePointSet(int size, int xMin=0, int xMax=1, int yMin=0, int yMax=1) {
-//     std::vector<point> points;
-//     std::random_device rd;   // Obtain a random seed
-//     std::mt19937 gen(rd());  // Standard mersenne_twister_engine seeded with rd()
-//     // Define the range [1, 100]
-//     std::uniform_real_distribution<double> dist(1.0, 100.0);
-//
-//
-//     for (int i = 0; i < size; i++) {
-//         points.emplace_back(dist(gen),dist(gen));
-//     }
-//     return points;
-// }
 
 
 int main() {
